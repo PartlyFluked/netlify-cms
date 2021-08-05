@@ -85,6 +85,12 @@ enum GitHubCommitStatusState {
   Success = 'success',
 }
 
+enum GitHubCheckRunState {
+  Queued = 'queued',
+  In_Progress = 'in_progress',
+  Completed = 'completed'
+}
+
 export enum PullRequestState {
   Open = 'open',
   Closed = 'closed',
@@ -864,6 +870,26 @@ export default class API {
       target_url: s.target_url,
       state:
         s.state === GitHubCommitStatusState.Success ? PreviewState.Success : PreviewState.Other,
+    }));
+  }
+
+  /**
+   * Retrieve check runs for a given SHA.
+   * Useful for things like deploy preview links.
+   */
+  async getCheckRuns(collectionName: string, slug: string) {
+    const contentKey = this.generateContentKey(collectionName, slug);
+    const branch = branchFromContentKey(contentKey);
+    const pullRequest = await this.getBranchPullRequest(branch);
+    const sha = pullRequest.head.sha;
+    const resp: { check_runs: any[] } = await this.request(
+      `${this.originRepoURL}/commits/${sha}/check-runs`,
+    );
+    return resp.check_runs.map(s => ({
+      context: s.name,
+      target_url: s.output.summary.match(/Preview URL:<\/strong><\/td><td>\n<a href='(.*)'>/)?.[1],
+      state:
+        s.status === GitHubCheckRunState.Completed ? PreviewState.Success : PreviewState.Other,
     }));
   }
 
