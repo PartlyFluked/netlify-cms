@@ -37,7 +37,6 @@
     "netlify-cms-backend-bitbucket": "^2.13.3",
     "netlify-cms-backend-git-gateway": "^2.12.2",
     "netlify-cms-backend-github": "github:PartlyFluked/netlify-cms#feature/usable-cloudflare-pages",
-    "netlify-cms-backend-gitlab": "^2.11.4",
     "netlify-cms-backend-proxy": "^1.2.3",
     "netlify-cms-backend-test": "^2.11.3",
     "netlify-cms-core": "^2.47.0",
